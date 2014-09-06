@@ -8,14 +8,13 @@ import conf.Constants;
 
 public class Circle {
 	
-	double offsetPercentage;
-	private int r;
+	private int r, y; // in centimeters
 	private Color color;
 	private int idx;
 	
 	public Circle(Coordinate2D pos, int idx)
 	{
-		offsetPercentage = 0d; 
+		y = 0;
 		this.r = Constants.CIRCLE_RADIUS;
 		this.color = Constants.CIRCLE_COLOR;
 		this.idx = idx;
@@ -31,14 +30,14 @@ public class Circle {
 		return color;
 	}
 	
-	public double getOffset()
+	public double getY()
 	{
-		return offsetPercentage;
+		return y;
 	}
 	
 	public void incrementY(int amount)
 	{
-		offsetPercentage = Math.max(0, Math.min(offsetPercentage + 0.001*amount, 1d));
+		y = (int) Math.max(0, y + amount);
 	}
 	
 	@Override 

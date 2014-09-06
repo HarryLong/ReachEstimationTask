@@ -30,14 +30,14 @@ public class CircleDrawerPanel extends JPanel {
 		System.out.println("R: " + r);
 
 		int x = ((getWidth()/2) - r); // Always at center
-		int y = (height) - (int) (c.getOffset()*height);
+//		int y = (height) - (int) (c.getOffset()*height);
 		
-		y = Math.max(0, Math.min(height-d, y));
-
-		System.out.println("Drawing circle @ [" + x + "," + y + "]");
-		
-		g.setColor(c.getColor());
-    	g.fillOval(x, y, d, d);
+//		y = Math.max(0, Math.min(height-d, y));
+//
+//		System.out.println("Drawing circle @ [" + x + "," + y + "]");
+//		
+//		g.setColor(c.getColor());
+//    	g.fillOval(x, y, d, d);
 	}
 	
 	public void setCircles(Circle[] circles)

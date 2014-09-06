@@ -1,29 +1,36 @@
 package core;
 
+import helper.Utils;
+
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 
 import modes.DesignPanel;
 import conf.Constants;
 
 public class MainWindow extends JFrame {
+	public static final String TITLE = "Reach Estimation Experiment";
 
+	
 	private MyActionListener actionListener;
 	
 	private DesignPanel designPanel;
 	
 	public MainWindow() {
+		super(TITLE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle(Constants.TITLE);
 		setSize(new Dimension(900, 900));
 		setLocationRelativeTo(null);	
 		actionListener = new MyActionListener();
@@ -56,7 +63,7 @@ public class MainWindow extends JFrame {
 	{
 		JMenuBar menuBar = new JMenuBar();
 		
-		/* FILE MENU */
+		//********FILE MENU*****************************************************
 		JMenu fileMenu = new JMenu("File");
 		
 		// Load
@@ -71,25 +78,60 @@ public class MainWindow extends JFrame {
 		
 		fileMenu.add(loadImgMI);
 		fileMenu.add(exitMI);
+		//**********************************************************************
 		
-		/* MODE MENU */
+		
+		//********MODE MENU*****************************************************
 		JMenu modeMenu = new JMenu("Mode");
+		
 		// experiment mode
-		JRadioButtonMenuItem experimentModeMI = new JRadioButtonMenuItem(ActionCommands.EXPERIMENT);
-		experimentModeMI.setActionCommand(ActionCommands.EXPERIMENT);
+		JRadioButtonMenuItem experimentModeMI = new JRadioButtonMenuItem(ActionCommands.EXPERIMENT_MODE);
+		experimentModeMI.setActionCommand(ActionCommands.EXPERIMENT_MODE);
 		experimentModeMI.addActionListener(actionListener);
 		
-		JRadioButtonMenuItem editModeMI = new JRadioButtonMenuItem(ActionCommands.EDIT);
-		editModeMI.setActionCommand(ActionCommands.EDIT);
+		JRadioButtonMenuItem editModeMI = new JRadioButtonMenuItem(ActionCommands.EDIT_MODE);
+		editModeMI.setActionCommand(ActionCommands.EDIT_MODE);
 		editModeMI.addActionListener(actionListener);
 		
 		modeMenu.add(experimentModeMI);
 		modeMenu.add(editModeMI);
+		//**********************************************************************
 		
+		//********SETTINGS MENU*************************************************
+		JMenu settingsMenu = new JMenu("Settings");
+		
+		// Scale Manager
+		JMenuItem scaleMgrMI = new JMenuItem(ActionCommands.SCALE_MANAGER);
+		scaleMgrMI.setActionCommand(ActionCommands.SCALE_MANAGER);
+		scaleMgrMI.addActionListener(actionListener);
+		
+		settingsMenu.add(scaleMgrMI);
+		//**********************************************************************
+
 		menuBar.add(fileMenu);
 		menuBar.add(modeMenu);
+		menuBar.add(settingsMenu);
 		
 		setJMenuBar(menuBar);
+	}
+	
+	public void exit()
+	{
+		int ret = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?", null, JOptionPane.YES_NO_OPTION);
+		
+		if(ret == JOptionPane.YES_OPTION)
+			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));			
+	}
+	
+	public void showScalingManager()
+	{
+		ScaleManagerDialog smDialog = new ScaleManagerDialog(this);
+		Dimension screenSize = Utils.getScreenSize();
+		Dimension dSize = new Dimension((int)screenSize.getWidth()/2, (int)screenSize.getHeight()/2);
+		smDialog.setSize(dSize);
+		setLocationRelativeTo(null);
+		
+		smDialog.setVisible(true);
 	}
 	
 	private class MyActionListener implements ActionListener
@@ -98,9 +140,22 @@ public class MainWindow extends JFrame {
 		public void actionPerformed(ActionEvent ae) {
 			switch(ae.getActionCommand())
 			{
-			case ActionCommands.LOAD:	
+			case ActionCommands.LOAD:
+				System.out.println("Not yet Implemented...");
+				break;
+			case ActionCommands.EXIT:
+				exit();
+				break;
+			case ActionCommands.EXPERIMENT_MODE:
+				System.out.println("Not yet Implemented...");
+				break;
+			case ActionCommands.EDIT_MODE:
+				System.out.println("Not yet Implemented...");
+				break;
+			case ActionCommands.SCALE_MANAGER:
 			default:
-					
+				MainWindow.this.showScalingManager();
+				
 			}
 		}
 	}
@@ -117,7 +172,10 @@ public class MainWindow extends JFrame {
 		public static final String EXIT = "Exit";
 		
 		// Modes
-		public static final String EXPERIMENT = "Experiment";
-		public static final String EDIT = "Edit";
+		public static final String EXPERIMENT_MODE = "Experiment";
+		public static final String EDIT_MODE = "Edit";
+		
+		// Settings
+		public static final String SCALE_MANAGER = "Scale Manager";
 	}
 }
