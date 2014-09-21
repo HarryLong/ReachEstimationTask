@@ -1,7 +1,5 @@
 package modes;
 
-import helper.Coordinate2D;
-
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -18,27 +16,24 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import dataholders.Circle;
+import dataholders.RunData;
 
 public class DesignPanel extends JPanel implements ListSelectionListener, MouseWheelListener, KeyEventDispatcher{
 	CircleDrawerPanel circleDrawer;
 	
-	Circle[] circles;
 	JList<Circle> circleProvider;
 	
 	boolean accelerateScroller;
+	private RunData runData;
 	
-	public DesignPanel(int circleCount) {
-		circleDrawer = new CircleDrawerPanel();
+	public DesignPanel(RunData runData) {
+		circleDrawer = new CircleDrawerPanel(true);
 		
-		circles = new Circle[circleCount];
-		for(int i = 0; i < circleCount; i++)
-		{
-			circles[i] = new Circle(new Coordinate2D(0, 0), i+1);
-		}
-		
-		circleProvider = new JList<Circle>(circles);
+		circleProvider = new JList<Circle>();
 		circleProvider.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		circleProvider.addListSelectionListener(this);
+
+		setRunData(runData);
 		
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this); 
 		addMouseWheelListener(this);
@@ -63,10 +58,17 @@ public class DesignPanel extends JPanel implements ListSelectionListener, MouseW
 		c.weightx = 0.1;
 		add(circleProvider, c);
 	}
-	
-	public int[] getSelectedCircles()
+
+	public RunData getRunData()
 	{
-		return circleProvider.getSelectedIndices();
+		return runData;
+	}
+	
+	public void setRunData(RunData runData)
+	{
+		this.runData = runData;
+		circleProvider.setListData(runData.getCircles());
+		repaint();
 	}
 
 	@Override
@@ -87,7 +89,7 @@ public class DesignPanel extends JPanel implements ListSelectionListener, MouseW
 			
 			for(int i = 0; i < circleCount; i++)
 			{
-				circlesToDraw[i] = circles[selectedIndices[i]];
+				circlesToDraw[i] = runData.getCircles()[selectedIndices[i]];
 			}
 			circleDrawer.setCircles(circlesToDraw);
 		}
@@ -98,25 +100,24 @@ public class DesignPanel extends JPanel implements ListSelectionListener, MouseW
 		if(ke.isControlDown())
 		{
 			accelerateScroller = true;
-			return true;
 		}
 		else
 		{
 			accelerateScroller = false;
-			return false;
 		}
+		return false;
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent mwe) {
-		int[] selectedCircles = DesignPanel.this.getSelectedCircles();
+		int[] selectedCircles = DesignPanel.this.circleProvider.getSelectedIndices();
 		if(selectedCircles.length == 1)
 		{
 	        int count = mwe.getWheelRotation();
 	        if(accelerateScroller)
 	        	count *= 10;
 	        
-	        circles[selectedCircles[0]].incrementY(count);
+	        DesignPanel.this.runData.incrementY(selectedCircles[0], count);
 	        DesignPanel.this.repaint();
 		}		
 	}

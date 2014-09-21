@@ -1,6 +1,7 @@
 package dataholders;
 
-import helper.Coordinate2D;
+import helper.Utils;
+import helper.Utils.UNIT;
 
 import java.awt.Color;
 
@@ -8,21 +9,17 @@ import conf.Constants;
 
 public class Circle {
 	
-	private int r, y; // in centimeters
+	public static int _scalefactor = 1;
+	
+	private int y;  // in pixels
 	private Color color;
-	private int idx;
+	private int id;
 	
-	public Circle(Coordinate2D pos, int idx)
+	public Circle(int y, int id)
 	{
-		y = 0;
-		this.r = Constants.CIRCLE_RADIUS;
+		this.y = y;
 		this.color = Constants.CIRCLE_COLOR;
-		this.idx = idx;
-	}
-	
-	public int getRadius()
-	{
-		return r;
+		this.id = id;
 	}
 	
 	public Color getColor()
@@ -30,19 +27,26 @@ public class Circle {
 		return color;
 	}
 	
-	public double getY()
+	public int getY()
 	{
 		return y;
 	}
-	
+
 	public void incrementY(int amount)
-	{
+	{	
+		System.out.println("Incrementing y (" + y + ") by " + amount);
 		y = (int) Math.max(0, y + amount);
+		System.out.println("New y: " + y);
+	}
+	
+	public int getId()
+	{
+		return id;
 	}
 	
 	@Override 
 	public String toString()
 	{
-		return ("Circle " + idx);
+		return ("Circle " + id);
 	}
 }
